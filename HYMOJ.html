@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HYMOJ</title>
+  <link rel="icon" href="h.jpg" type="image/jpeg">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: rgb(236, 236, 236);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      background-color: #333;
+      color: white;
+      padding: 10px;
+      gap: 30px;
+    }
+
+    nav img {
+      width: 150px;
+      height: 50px;
+      margin-right: 10px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+      position: relative;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    nav a.active {
+      font-weight: bold;
+    }
+
+  .slider {
+      width: 1000px;
+      height: 500px;
+      position: relative;
+      float: left;
+      margin-left: 50px;
+    }
+
+  .slider img {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+  .slider img.active {
+      opacity: 1;
+    }
+
+  .indicators {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+    }
+
+  .indicators div {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: lightgray;
+      margin: 0 5px;
+    }
+
+  .indicators div.active {
+      background-color: black;
+    }
+
+    #prevBtn,
+    #nextBtn {
+      position: absolute;
+      top: 45%;
+      cursor: pointer;
+      font-size: 30px;
+      color: lightgray;
+      z-index: 1;
+    }
+
+    #prevBtn {
+      left: 20px;
+    }
+
+    #nextBtn {
+      right: 20px;
+    }
+
+    #achievementContainer {
+      position: absolute;
+      top: 170px;
+      left: 1100px;
+      background-color: white;
+      padding: 10px;
+      width: 300px;
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #achievementContainer img,
+    #achievementContainer video {
+      max-width: 280px;
+      max-height: 280px;
+      margin-bottom: 10px;
+    }
+
+  .luck-text {
+      font-size: 18px;
+      color: black;
+      text-align: center;
+      margin-top: 5px;
+    }
+
+  .small-text {
+      font-size: 12px;
+      color: gray;
+      text-align: center;
+    }
+
+  .star-display {
+      font-size: 24px;
+      color: gold;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <img src="HYMOJ.jpg" alt="HYMOJ Logo">
+    <a href="#" class="nav-link">首页</a>
+    <a href="#" class="nav-link">关于我们</a>
+  </nav>
+  <div id="content">
+    <!-- 首页内容 -->
+    <div id="home-content" style="display: block;">
+      <div class="slider">
+        <img src="页面1.jpg" class="active">
+        <img src="页面2.jpg">
+        <img src="页面3.jpg">
+        <button id="prevBtn">◀</button>
+        <button id="nextBtn">▶</button>
+        <div class="indicators" style="position: absolute; bottom: 10px; right: 10px;"></div>
+      </div>
+      <div id="achievementContainer">
+        <p class="luck-text">试试运气</p>
+        <!-- 添加成就抽取图片 -->
+        <img id="achievementImage" src="成就抽取.jpg">
+        <p class="small-text">每天一次，防止上瘾</p>
+      </div>
+    </div>
+    <!-- 关于我们内容 -->
+    <div id="about-us-content" style="display: none;">
+      <!-- 新增的白色板块 -->
+      <div style="background-color: white; padding: 10px; margin-left: 20px;">
+        <p style="font-weight: bold;">加入我们</p>
+        <p style="font-weight: bold;">Join us!</p>
+        <p><a href="https://www.luogu.com.cn/team/88490#main">HYMOJ</a></p>
+      </div>
+    </div>
+  </div>
+  <script>
+    let images = document.querySelectorAll('.slider img');
+    let currentImage = 0;
+    let indicators = document.querySelector('.indicators');
+    let prevBtn = document.getElementById('prevBtn');
+    let nextBtn = document.getElementById('nextBtn');
+    let navLinks = document.querySelectorAll('.nav-link');
+    let homeContent = document.getElementById('home-content');
+    let aboutUsContent = document.getElementById('about-us-content');
+    let achievementImage = document.getElementById('achievementImage');
+    let achievementContainer = document.getElementById('achievementContainer');
+
+    function updateIndicators() {
+      indicators.innerHTML = '';
+      for (let i = 0; i < images.length; i++) {
+        let indicator = document.createElement('div');
+        indicator.style.backgroundColor = i === currentImage? 'black' : 'lightgray';
+        indicator.addEventListener('click', () => {
+          currentImage = i;
+          updateSlider();
+          updateIndicators();
+        });
+        indicators.appendChild(indicator);
+      }
+    }
+
+    function updateSlider() {
+      images.forEach(image => image.classList.remove('active'));
+      images[currentImage].classList.add('active');
+    }
+
+    prevBtn.addEventListener('click', () => {
+      currentImage = (currentImage - 1 + images.length) % images.length;
+      updateSlider();
+      updateIndicators();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentImage = (currentImage + 1) % images.length;
+      updateSlider();
+      updateIndicators();
+    });
+
+    setInterval(() => {
+      currentImage = (currentImage + 1) % images.length;
+      updateSlider();
+      updateIndicators();
+    }, 3000);
+
+    updateSlider();
+    updateIndicators();
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', function () {
+        navLinks.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+        if (this.textContent === '首页') {
+          homeContent.style.display = 'block';
+          aboutUsContent.style.display = 'none';
+        } else if (this.textContent === '关于我们') {
+          homeContent.style.display = 'none';
+          aboutUsContent.style.display = 'block';
+        }
+      });
+    });
+
+    // 为成就抽取图片添加点击事件
+    achievementImage.addEventListener('click', function () {
+      // 隐藏图片
+      this.style.display = 'none';
+      // 创建视频元素
+      let video = document.createElement('video');
+      video.src = '抽奖动画.mp4'; // 替换为你的视频路径
+      video.autoplay = true;
+      video.style.maxWidth = '280px';
+      video.style.maxHeight = '280px';
+      achievementContainer.appendChild(video);
+      // 视频播放结束后进行抽奖逻辑
+      video.addEventListener('ended', function () {
+        this.remove();
+        // 生成随机数确定抽到的图片
+        let randomNumber = Math.random();
+        let selectedImage;
+        if (randomNumber < 0.7) {
+          let oneStarImages = ['1星1.jpg', '1星2.jpg', '1星3.jpg', '1星4.jpg'];
+          selectedImage = oneStarImages[Math.floor(Math.random() * oneStarImages.length)];
+        } else if (randomNumber < 0.85) {
+          let twoStarImages = ['2星1.jpg', '2星2.jpg', '2星3.jpg'];
+          selectedImage = twoStarImages[Math.floor(Math.random() * twoStarImages.length)];
+        } else {
+          selectedImage = '4星1.jpg';
+        }
+        // 创建图片元素
+        let newImage = document.createElement('img');
+        newImage.src = selectedImage;
+        newImage.style.maxWidth = '280px';
+        newImage.style.maxHeight = '280px';
+        achievementContainer.appendChild(newImage);
+        // 根据图片名显示对应数量的金色五角星
+        let starCount = parseInt(selectedImage.charAt(0));
+        let starDisplay = document.createElement('p');
+        starDisplay.classList.add('star-display');
+        starDisplay.textContent = '★'.repeat(starCount);
+        achievementContainer.appendChild(starDisplay);
+      });
+    });
+  </script>
+</body>
+
+</html>
